@@ -1,0 +1,11 @@
+ÀÄejercicio3
+   ÃÄMAIN  0/86  Ram=1
+   ³  ÃÄ??0??
+   ³  ÃÄ@PSTRINGCN7_19200_62_63  0/82  Ram=4
+   ³  ÃÄ@PRINTF_U_19200_62_63  0/58  Ram=2
+   ³  ³  ÃÄ@DIV88  0/21  Ram=3
+   ³  ³  ÀÄ@DIV88  0/21  Ram=3
+   ³  ÀÄ@delay_ms1  0/22  Ram=1
+   ÃÄloader16F877A  3/1  Ram=0
+   ÀÄclock_isr  0/95  Ram=0
+      ÀÄ@PSTRINGC7_19200_62_63  (Inline)  Ram=3

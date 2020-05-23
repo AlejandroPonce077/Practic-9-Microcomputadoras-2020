@@ -1,0 +1,318 @@
+CCS PCM C Compiler, Version 4.104, 5967               21-abr.-20 16:47
+
+               Filename: C:\Users\Ponce\Downloads\Practica 9 micros\ejercicio4.lst
+
+               ROM used: 540 words (7%)
+                         Largest free fragment is 2048
+               RAM used: 16 (4%) at main() level
+                         24 (7%) worst case
+               Stack:    4 worst case (2 in main + 2 for interrupts)
+
+*
+0000:  MOVLW  01
+0001:  MOVWF  0A
+0002:  GOTO   1CE
+0003:  NOP
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.5
+0018:  GOTO   01B
+0019:  BTFSC  0B.2
+001A:  GOTO   030
+001B:  BTFSS  0B.3
+001C:  GOTO   01F
+001D:  BTFSC  0B.0
+001E:  GOTO   033
+001F:  MOVF   22,W
+0020:  MOVWF  04
+0021:  MOVF   23,W
+0022:  MOVWF  77
+0023:  MOVF   24,W
+0024:  MOVWF  78
+0025:  MOVF   25,W
+0026:  MOVWF  79
+0027:  MOVF   26,W
+0028:  MOVWF  7A
+0029:  MOVF   20,W
+002A:  MOVWF  0A
+002B:  SWAPF  21,W
+002C:  MOVWF  03
+002D:  SWAPF  7F,F
+002E:  SWAPF  7F,W
+002F:  RETFIE
+0030:  BCF    0A.3
+0031:  BCF    0A.4
+0032:  GOTO   0FF
+0033:  BCF    0A.3
+0034:  BCF    0A.4
+0035:  GOTO   07E
+.................... #include <16f877.h>     //Tipo de MicroControlador a utilizar 
+.................... //////// Standard Header file for the PIC16F877 device //////////////// 
+.................... #device PIC16F877 
+.................... #list 
+....................  
+.................... #fuses HS,NOPROTECT, 
+.................... #use delay(clock=20000000) //Frec. de Osc. 20Mhz 
+01B8:  MOVLW  2B
+01B9:  MOVWF  04
+01BA:  BCF    03.7
+01BB:  MOVF   00,W
+01BC:  BTFSC  03.2
+01BD:  GOTO   1CB
+01BE:  MOVLW  06
+01BF:  MOVWF  78
+01C0:  CLRF   77
+01C1:  DECFSZ 77,F
+01C2:  GOTO   1C1
+01C3:  DECFSZ 78,F
+01C4:  GOTO   1C0
+01C5:  MOVLW  7B
+01C6:  MOVWF  77
+01C7:  DECFSZ 77,F
+01C8:  GOTO   1C7
+01C9:  DECFSZ 00,F
+01CA:  GOTO   1BE
+01CB:  BCF    0A.3
+01CC:  BCF    0A.4
+01CD:  GOTO   219 (RETURN)
+.................... //Configuración Puerto SERIAL 
+.................... #use rs232(baud=9600, xmit=PIN_C6, rcv=PIN_C7) 
+.................... #org 0x1F00, 0x1FFF 
+....................  
+.................... void loader16F877(void) {} 
+*
+1F00:  RETURN
+....................  
+.................... //Definición de variables  
+.................... int var; 
+.................... int var2; 
+.................... int16 contador=0; 
+....................  
+.................... #int_rb //Rutina de interrupción 
+....................  
+.................... port_rb(){ 
+....................      
+....................     var2=input_b(); //Lee la entrada en el puerto B 
+*
+007E:  MOVLW  FF
+007F:  BSF    03.5
+0080:  MOVWF  06
+0081:  BCF    03.5
+0082:  MOVF   06,W
+0083:  MOVWF  28
+....................      
+....................     if(var2==0x80)  //Interrupción PB7 Activada? 
+0084:  MOVF   28,W
+0085:  SUBLW  80
+0086:  BTFSS  03.2
+0087:  GOTO   08F
+....................     printf("Interrupcion PB7 activada\n\r"); 
+0088:  MOVLW  BE
+0089:  BSF    03.6
+008A:  MOVWF  0D
+008B:  MOVLW  00
+008C:  MOVWF  0F
+008D:  BCF    03.6
+008E:  CALL   036
+....................     if(var2==0x40)  //Interrupción PB6 Activada? 
+008F:  MOVF   28,W
+0090:  SUBLW  40
+0091:  BTFSS  03.2
+0092:  GOTO   09A
+....................     printf("Interrupcion PB6 activada\n\r");               
+0093:  MOVLW  CC
+0094:  BSF    03.6
+0095:  MOVWF  0D
+0096:  MOVLW  00
+0097:  MOVWF  0F
+0098:  BCF    03.6
+0099:  CALL   036
+....................     if(var2==0x20)  //Interrupción PB5 Activada? 
+009A:  MOVF   28,W
+009B:  SUBLW  20
+009C:  BTFSS  03.2
+009D:  GOTO   0A5
+....................     printf("Interrupcion PB5 activada\n\r"); 
+009E:  MOVLW  DA
+009F:  BSF    03.6
+00A0:  MOVWF  0D
+00A1:  MOVLW  00
+00A2:  MOVWF  0F
+00A3:  BCF    03.6
+00A4:  CALL   036
+....................     if(var2==0x10)  //Interrupción PB4 Activada? 
+00A5:  MOVF   28,W
+00A6:  SUBLW  10
+00A7:  BTFSS  03.2
+00A8:  GOTO   0B0
+....................     printf("Interrupcion PB4 activada\n\r"); 
+00A9:  MOVLW  E8
+00AA:  BSF    03.6
+00AB:  MOVWF  0D
+00AC:  MOVLW  00
+00AD:  MOVWF  0F
+00AE:  BCF    03.6
+00AF:  CALL   036
+....................     if(var2==0x00)  //Interrupción desactiada? 
+00B0:  MOVF   28,F
+00B1:  BTFSS  03.2
+00B2:  GOTO   0BA
+....................     printf("Pulso de bajada\n\r"); 
+00B3:  MOVLW  F6
+00B4:  BSF    03.6
+00B5:  MOVWF  0D
+00B6:  MOVLW  00
+00B7:  MOVWF  0F
+00B8:  BCF    03.6
+00B9:  CALL   036
+....................  } 
+....................   
+00BA:  BCF    0B.0
+00BB:  BCF    0A.3
+00BC:  BCF    0A.4
+00BD:  GOTO   01F
+.................... #int_rtcc      //Para timer0 
+....................  
+.................... clock_isr(){   //Rutina de atención a la interrupción por Timer0 
+....................      contador++; 
+*
+00FF:  INCF   29,F
+0100:  BTFSC  03.2
+0101:  INCF   2A,F
+....................      if(contador==770){ 
+0102:  MOVF   29,W
+0103:  SUBLW  02
+0104:  BTFSS  03.2
+0105:  GOTO   10C
+0106:  MOVF   2A,W
+0107:  SUBLW  03
+0108:  BTFSS  03.2
+0109:  GOTO   10C
+....................      contador=0; 
+010A:  CLRF   2A
+010B:  CLRF   29
+....................    } 
+.................... } 
+....................  
+010C:  BCF    0B.2
+010D:  BCF    0A.3
+010E:  BCF    0A.4
+010F:  GOTO   01F
+.................... void main(){ 
+*
+01CE:  CLRF   04
+01CF:  BCF    03.7
+01D0:  MOVLW  1F
+01D1:  ANDWF  03,F
+01D2:  MOVLW  81
+01D3:  BSF    03.5
+01D4:  MOVWF  19
+01D5:  MOVLW  A6
+01D6:  MOVWF  18
+01D7:  MOVLW  90
+01D8:  BCF    03.5
+01D9:  MOVWF  18
+01DA:  CLRF   2A
+01DB:  CLRF   29
+01DC:  BSF    03.5
+01DD:  BSF    1F.0
+01DE:  BSF    1F.1
+01DF:  BSF    1F.2
+01E0:  BCF    1F.3
+....................  
+....................     Enable_interrupts(INT_RB); //Habilita interrupción por cambio 
+01E1:  BCF    03.5
+01E2:  BSF    0B.3
+....................     // de nivel en los cuatro bits más significativos del puerto B 
+....................  
+....................     set_timer0(0);             //Inicia el timer0 en 00H 
+01E3:  CLRF   01
+....................     //Fuente de reloj y pre-divisor 
+....................     setup_counters(RTCC_INTERNAL,RTCC_DIV_256);  
+01E4:  BSF    03.5
+01E5:  MOVF   01,W
+01E6:  ANDLW  C0
+01E7:  IORLW  07
+01E8:  MOVWF  01
+01E9:  CLRWDT
+....................     enable_interrupts(INT_RTCC);//Habilita la interrupción TIMER0 
+01EA:  BCF    03.5
+01EB:  BSF    0B.5
+....................     enable_interrupts(GLOBAL);  //Habilita interrupciones generales 
+01EC:  MOVLW  C0
+01ED:  IORWF  0B,F
+....................  
+....................      while(1){ 
+....................         delay_us(20);     //Retardo  
+01EE:  MOVLW  21
+01EF:  MOVWF  77
+01F0:  DECFSZ 77,F
+01F1:  GOTO   1F0
+....................         var=read_adc();   //Lee el resultado de la Conversión 
+01F2:  BSF    1F.2
+01F3:  BTFSC  1F.2
+01F4:  GOTO   1F3
+01F5:  MOVF   1E,W
+01F6:  MOVWF  27
+....................         delay_us(20);     //Retardo 
+01F7:  MOVLW  21
+01F8:  MOVWF  77
+01F9:  DECFSZ 77,F
+01FA:  GOTO   1F9
+....................         //Imprime en la terminal el resultado de la Conv. 
+....................         printf("valor= %u \n\r",var);  
+01FB:  MOVLW  10
+01FC:  BSF    03.6
+01FD:  MOVWF  0D
+01FE:  MOVLW  01
+01FF:  MOVWF  0F
+0200:  BCF    03.0
+0201:  MOVLW  07
+0202:  BCF    03.6
+0203:  MOVWF  2B
+0204:  GOTO   117
+0205:  MOVF   27,W
+0206:  MOVWF  2B
+0207:  MOVLW  1B
+0208:  MOVWF  2C
+0209:  GOTO   17E
+020A:  MOVLW  20
+020B:  BTFSS  0C.4
+020C:  GOTO   20B
+020D:  MOVWF  19
+020E:  MOVLW  0A
+020F:  BTFSS  0C.4
+0210:  GOTO   20F
+0211:  MOVWF  19
+0212:  MOVLW  0D
+0213:  BTFSS  0C.4
+0214:  GOTO   213
+0215:  MOVWF  19
+....................         delay_ms(100);    //Retardo 
+0216:  MOVLW  64
+0217:  MOVWF  2B
+0218:  GOTO   1B8
+....................      } 
+0219:  GOTO   1EE
+.................... } 
+021A:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F72   HS NOWDT PUT NOPROTECT BROWNOUT NOLVP NOCPD NOWRT NODEBUG

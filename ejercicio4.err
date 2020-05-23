@@ -1,0 +1,5 @@
+>>> Warning 208 "ejercicio4.c" Line 17(1,8): Function not void and does not return a value  port_rb
+>>> Warning 208 "ejercicio4.c" Line 35(1,10): Function not void and does not return a value  clock_isr
+>>> Warning 203 "ejercicio4.c" Line 53(1,1): Condition always TRUE
+      Memory usage:   ROM=7%      RAM=4% - 7%
+      0 Errors,  3 Warnings.

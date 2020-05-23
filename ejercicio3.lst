@@ -1,0 +1,256 @@
+CCS PCM C Compiler, Version 4.104, 5967               21-abr.-20 16:43
+
+               Filename: C:\Users\Ponce\Downloads\Practica 9 micros\ejercicio3.lst
+
+               ROM used: 449 words (5%)
+                         Largest free fragment is 2048
+               RAM used: 15 (4%) at main() level
+                         23 (6%) worst case
+               Stack:    3 worst case (2 in main + 1 for interrupts)
+
+*
+0000:  MOVLW  01
+0001:  MOVWF  0A
+0002:  GOTO   16A
+0003:  NOP
+0004:  MOVWF  7F
+0005:  SWAPF  03,W
+0006:  CLRF   03
+0007:  MOVWF  21
+0008:  MOVF   0A,W
+0009:  MOVWF  20
+000A:  CLRF   0A
+000B:  MOVF   04,W
+000C:  MOVWF  22
+000D:  MOVF   77,W
+000E:  MOVWF  23
+000F:  MOVF   78,W
+0010:  MOVWF  24
+0011:  MOVF   79,W
+0012:  MOVWF  25
+0013:  MOVF   7A,W
+0014:  MOVWF  26
+0015:  BCF    03.7
+0016:  BCF    03.5
+0017:  BTFSS  0B.5
+0018:  GOTO   01B
+0019:  BTFSC  0B.2
+001A:  GOTO   02C
+001B:  MOVF   22,W
+001C:  MOVWF  04
+001D:  MOVF   23,W
+001E:  MOVWF  77
+001F:  MOVF   24,W
+0020:  MOVWF  78
+0021:  MOVF   25,W
+0022:  MOVWF  79
+0023:  MOVF   26,W
+0024:  MOVWF  7A
+0025:  MOVF   20,W
+0026:  MOVWF  0A
+0027:  SWAPF  21,W
+0028:  MOVWF  03
+0029:  SWAPF  7F,F
+002A:  SWAPF  7F,W
+002B:  RETFIE
+002C:  BCF    0A.3
+002D:  BCF    0A.4
+002E:  GOTO   02F
+.................... /////////////////////////////////////////////////////////////////////////////// 
+.................... // 
+.................... // Realizar un programa el cual constantemente transmita el resultado de la  
+.................... // conversion a la terminal, y cada 30 segundos interrumpa la ejecución de este  
+.................... // y envíe el siguiente texto "Laboratorio de microcomputadoras" 
+.................... // 
+.................... /////////////////////////////////////////////////////////////////////////////// 
+....................  
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+.................... #list 
+....................  
+.................... #fuses HS, NOWDT, NOPROTECT 
+.................... #device ADC=8 
+.................... #use delay(clock = 20000000) 
+0154:  MOVLW  2A
+0155:  MOVWF  04
+0156:  BCF    03.7
+0157:  MOVF   00,W
+0158:  BTFSC  03.2
+0159:  GOTO   167
+015A:  MOVLW  06
+015B:  MOVWF  78
+015C:  CLRF   77
+015D:  DECFSZ 77,F
+015E:  GOTO   15D
+015F:  DECFSZ 78,F
+0160:  GOTO   15C
+0161:  MOVLW  7B
+0162:  MOVWF  77
+0163:  DECFSZ 77,F
+0164:  GOTO   163
+0165:  DECFSZ 00,F
+0166:  GOTO   15A
+0167:  BCF    0A.3
+0168:  BCF    0A.4
+0169:  GOTO   1BC (RETURN)
+.................... #use rs232(baud=19200, xmit=PIN_C6, rcv=PIN_C7) 
+.................... #org 0x1F00, 0x1FFF void loader16F877A(void){} 
+*
+1F00:  RETURN
+....................  
+.................... #define CUENTAS 3000 //Número de cuentas para 30 s 
+.................... static int16 contador; 
+*
+017D:  BCF    03.5
+017E:  CLRF   27
+017F:  CLRF   28
+....................  
+.................... #INT_RTCC 
+.................... void clock_isr() 
+.................... { 
+....................    if(contador >= CUENTAS) 
+*
+002F:  MOVF   28,W
+0030:  SUBLW  0A
+0031:  BTFSC  03.0
+0032:  GOTO   085
+0033:  XORLW  FF
+0034:  BTFSS  03.2
+0035:  GOTO   03A
+0036:  MOVF   27,W
+0037:  SUBLW  B7
+0038:  BTFSC  03.0
+0039:  GOTO   085
+....................    { 
+....................       printf("\n\rLaboratorio de microcomputadoras"); 
+003A:  MOVLW  8E
+003B:  BSF    03.6
+003C:  MOVWF  0D
+003D:  MOVLW  00
+003E:  MOVWF  0F
+....................       contador=0; 
+*
+0082:  BCF    03.6
+0083:  CLRF   28
+0084:  CLRF   27
+....................    } 
+....................    contador++;    
+0085:  INCF   27,F
+0086:  BTFSC  03.2
+0087:  INCF   28,F
+....................    set_timer0(61); 
+0088:  MOVLW  3D
+0089:  MOVWF  01
+.................... } 
+....................  
+008A:  BCF    0B.2
+008B:  BCF    0A.3
+008C:  BCF    0A.4
+008D:  GOTO   01B
+.................... void main() 
+.................... { 
+*
+016A:  CLRF   04
+016B:  BCF    03.7
+016C:  MOVLW  1F
+016D:  ANDWF  03,F
+016E:  MOVLW  40
+016F:  BSF    03.5
+0170:  MOVWF  19
+0171:  MOVLW  A6
+0172:  MOVWF  18
+0173:  MOVLW  90
+0174:  BCF    03.5
+0175:  MOVWF  18
+0176:  BSF    03.5
+0177:  BSF    1F.0
+0178:  BSF    1F.1
+0179:  BSF    1F.2
+017A:  BCF    1F.3
+017B:  MOVLW  07
+017C:  MOVWF  1C
+....................    setup_counters(RTCC_INTERNAL,RTCC_DIV_256);   //Fuente de reloj y predivisor 
+*
+0180:  BSF    03.5
+0181:  MOVF   01,W
+0182:  ANDLW  C0
+0183:  IORLW  07
+0184:  MOVWF  01
+0185:  CLRWDT
+....................    set_timer0(61);                     //Inicia el TIMER 0 en 61 decimal 
+0186:  MOVLW  3D
+0187:  BCF    03.5
+0188:  MOVWF  01
+....................    enable_interrupts(INT_RTCC);        //Habilitar la interrupción por TIMER 0 
+0189:  BSF    0B.5
+....................    enable_interrupts(GLOBAL);          //Habilita interrupciones generales 
+018A:  MOVLW  C0
+018B:  IORWF  0B,F
+....................    setup_port_a(ALL_ANALOG); 
+018C:  BSF    03.5
+018D:  BCF    1F.0
+018E:  BCF    1F.1
+018F:  BCF    1F.2
+0190:  BCF    1F.3
+....................    setup_adc(ADC_CLOCK_INTERNAL); 
+0191:  BCF    1F.6
+0192:  BCF    03.5
+0193:  BSF    1F.6
+0194:  BSF    1F.7
+0195:  BSF    03.5
+0196:  BCF    1F.7
+0197:  BCF    03.5
+0198:  BSF    1F.0
+....................    set_adc_channel(0); 
+0199:  MOVLW  00
+019A:  MOVWF  78
+019B:  MOVF   1F,W
+019C:  ANDLW  C7
+019D:  IORWF  78,W
+019E:  MOVWF  1F
+....................    delay_us(20); 
+019F:  MOVLW  21
+01A0:  MOVWF  77
+01A1:  DECFSZ 77,F
+01A2:  GOTO   1A1
+....................     
+....................    while(TRUE) 
+....................    { 
+....................       printf("\n\rResultado de la conversion AD: %3u",read_adc()); 
+01A3:  BSF    1F.2
+01A4:  BTFSC  1F.2
+01A5:  GOTO   1A4
+01A6:  MOVF   1E,W
+01A7:  MOVWF  29
+01A8:  MOVLW  A0
+01A9:  BSF    03.6
+01AA:  MOVWF  0D
+01AB:  MOVLW  00
+01AC:  MOVWF  0F
+01AD:  BCF    03.0
+01AE:  MOVLW  21
+01AF:  BCF    03.6
+01B0:  MOVWF  2A
+01B1:  GOTO   0B3
+01B2:  MOVF   29,W
+01B3:  MOVWF  2A
+01B4:  MOVLW  13
+01B5:  MOVWF  2B
+01B6:  GOTO   11A
+....................       delay_ms(1000); 
+01B7:  MOVLW  04
+01B8:  MOVWF  29
+01B9:  MOVLW  FA
+01BA:  MOVWF  2A
+01BB:  GOTO   154
+01BC:  DECFSZ 29,F
+01BD:  GOTO   1B9
+....................    } 
+01BE:  GOTO   1A3
+.................... } 
+....................  
+01BF:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F72   HS NOWDT PUT NODEBUG NOPROTECT BROWNOUT NOLVP NOCPD NOWRT

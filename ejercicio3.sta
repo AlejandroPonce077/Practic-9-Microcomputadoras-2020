@@ -1,0 +1,56 @@
+
+ROM used: 449 (5%)
+          2049 (25%) including unused fragments
+
+          1 Average locations per line
+          25 Average locations per statement
+
+RAM used: 15 (4%) at main() level
+          23 (6%) worst case
+
+Stack used: 3 worst case (out of 8 total available)
+
+Lines Stmts  %   Files
+----- ----- ---  -----
+   49    18 100  ejercicio3.c
+  326     0   0  ..\..\..\..\Program Files (x86)\PICC\devices\16F877A.h
+----- -----
+  375    18 Total
+
+Page ROM  %  RAM   Vol Diff  Functions:
+---- --- --- ---   --- ----  ----------
+0     22   5   1             @delay_ms1
+3      1   0   0     6  0.5  loader16F877A
+0     95  21   0    98  2.6  clock_isr
+0     18   4   0             @const72
+ Inline        3   305  2.7  @PSTRINGC7_19200_62_63
+0     86  19   1   253  2.2  MAIN
+0     19   4   0   240  2.8  @const76
+0     82  18   4   240  2.8  @PSTRINGCN7_19200_62_63
+0     21   5   3             @DIV88
+0     58  13   2             @PRINTF_U_19200_62_63
+
+Program metrics:
+    Functions               6
+    Statements              18
+    Comments                93
+    Volume (V)              1700
+    Difficilty (D)          13.6
+    Effort to implement (E) 23193
+    Time to implement (T)   21 minutes
+    Est Delivered Bugs (B)  0
+    Cyclomatic Complexity   1
+    Maintainability (MI)    115
+
+ Segment     Used  Free
+-----------  ----  ----
+00000-00003     4  0  
+00004-0002E    43  0  
+0002F-007FF   401  1600  
+00800-00FFF     0  2048  
+01000-017FF     0  2048  
+01800-01EFF     0  1792  
+01F00-01FFF     1  255  
+
+
+

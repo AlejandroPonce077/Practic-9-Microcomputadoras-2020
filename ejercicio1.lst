@@ -1,0 +1,148 @@
+CCS PCM C Compiler, Version 4.104, 5967               21-abr.-20 16:29
+
+               Filename: C:\Users\Ponce\Downloads\Practica 9 micros\ejercicio1.lst
+
+               ROM used: 281 words (3%)
+                         Largest free fragment is 2048
+               RAM used: 7 (2%) at main() level
+                         11 (3%) worst case
+               Stack:    2 locations
+
+*
+0000:  MOVLW  00
+0001:  MOVWF  0A
+0002:  GOTO   0CF
+0003:  NOP
+.................... /////////////////////////////////////////////////////////////////////////////// 
+.................... //    
+.................... // Programa el cual obtenga una señal analógica a través del canal de su  
+.................... // elección, se realice la conversión y el resultado de esta, la muestre en un  
+.................... // puerto paralelo y a su vez lo transmita al puerto serie. 
+.................... // 
+.................... /////////////////////////////////////////////////////////////////////////////// 
+....................  
+.................... #include <16F877A.h> 
+.................... //////// Standard Header file for the PIC16F877A device //////////////// 
+.................... #device PIC16F877A 
+.................... #list 
+....................  
+.................... #fuses NOWDT, NOLVP, NOPROTECT 
+.................... #device adc=8                                   //CAD con resolución de 8 bits 
+.................... #use delay(clock=20000000) 
+*
+001A:  MOVLW  23
+001B:  MOVWF  04
+001C:  BCF    03.7
+001D:  MOVF   00,W
+001E:  BTFSC  03.2
+001F:  GOTO   02D
+0020:  MOVLW  06
+0021:  MOVWF  78
+0022:  CLRF   77
+0023:  DECFSZ 77,F
+0024:  GOTO   023
+0025:  DECFSZ 78,F
+0026:  GOTO   022
+0027:  MOVLW  7B
+0028:  MOVWF  77
+0029:  DECFSZ 77,F
+002A:  GOTO   029
+002B:  DECFSZ 00,F
+002C:  GOTO   020
+002D:  RETURN
+.................... #use rs232(baud=19200, xmit=PIN_C6, rcv=PIN_C7) 
+....................  
+.................... void main() 
+.................... { 
+*
+00CF:  CLRF   04
+00D0:  BCF    03.7
+00D1:  MOVLW  1F
+00D2:  ANDWF  03,F
+00D3:  MOVLW  40
+00D4:  BSF    03.5
+00D5:  MOVWF  19
+00D6:  MOVLW  A6
+00D7:  MOVWF  18
+00D8:  MOVLW  90
+00D9:  BCF    03.5
+00DA:  MOVWF  18
+00DB:  BSF    03.5
+00DC:  BSF    1F.0
+00DD:  BSF    1F.1
+00DE:  BSF    1F.2
+00DF:  BCF    1F.3
+00E0:  MOVLW  07
+00E1:  MOVWF  1C
+....................    unsigned int8 resultadoAD; 
+....................    setup_port_a(ALL_ANALOG); 
+00E2:  BCF    1F.0
+00E3:  BCF    1F.1
+00E4:  BCF    1F.2
+00E5:  BCF    1F.3
+....................    setup_adc(ADC_CLOCK_INTERNAL); 
+00E6:  BCF    1F.6
+00E7:  BCF    03.5
+00E8:  BSF    1F.6
+00E9:  BSF    1F.7
+00EA:  BSF    03.5
+00EB:  BCF    1F.7
+00EC:  BCF    03.5
+00ED:  BSF    1F.0
+....................    set_adc_channel(0); 
+00EE:  MOVLW  00
+00EF:  MOVWF  78
+00F0:  MOVF   1F,W
+00F1:  ANDLW  C7
+00F2:  IORWF  78,W
+00F3:  MOVWF  1F
+....................    delay_ms(20); 
+00F4:  MOVLW  14
+00F5:  MOVWF  23
+00F6:  CALL   01A
+....................     
+....................    while(TRUE) 
+....................    { 
+....................       resultadoAD=read_adc(); 
+00F7:  BSF    1F.2
+00F8:  BTFSC  1F.2
+00F9:  GOTO   0F8
+00FA:  MOVF   1E,W
+00FB:  MOVWF  21
+....................       output_b(resultadoAD); 
+00FC:  BSF    03.5
+00FD:  CLRF   06
+00FE:  BCF    03.5
+00FF:  MOVF   21,W
+0100:  MOVWF  06
+....................       printf("\n\rEl resultado de la conversion AD es: %3u", resultadoAD); 
+0101:  MOVLW  04
+0102:  BSF    03.6
+0103:  MOVWF  0D
+0104:  MOVLW  00
+0105:  MOVWF  0F
+0106:  BCF    03.0
+0107:  MOVLW  27
+0108:  BCF    03.6
+0109:  MOVWF  22
+010A:  GOTO   02E
+010B:  MOVF   21,W
+010C:  MOVWF  22
+010D:  MOVLW  13
+010E:  MOVWF  23
+010F:  GOTO   095
+....................       delay_ms(1000); 
+0110:  MOVLW  04
+0111:  MOVWF  22
+0112:  MOVLW  FA
+0113:  MOVWF  23
+0114:  CALL   01A
+0115:  DECFSZ 22,F
+0116:  GOTO   112
+....................    } 
+0117:  GOTO   0F7
+.................... } 
+0118:  SLEEP
+
+Configuration Fuses:
+   Word  1: 3F73   RC NOWDT PUT NODEBUG NOPROTECT BROWNOUT NOLVP NOCPD NOWRT
